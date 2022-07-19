@@ -12,6 +12,7 @@ namespace DataAccess.Repository
     {
         IEnumerable<Member> GetMembers();
         Member GetMemberByID(int MemberID);
+        public Member GetMemberByAccount(string email, string password);
         void InsertMember(Member member);
         void DeleteMember(int MemberID);
         void UpdateMember(Member member);

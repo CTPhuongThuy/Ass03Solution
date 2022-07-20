@@ -12,12 +12,8 @@ namespace eStore.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly AssignmentContext _context;
+        private readonly AssignmentContext db;
 
-        public LoginController(AssignmentContext context)
-        {
-            _context = context;
-        }
         public IActionResult Login()
         {
             return View();
@@ -33,10 +29,8 @@ namespace eStore.Controllers
             bool isMem = false;
 
             var members = memberRepository.GetMembers();
-          //  Member loginUser = _context.Members.FirstOrDefault(m => m.Email == email && m.Password == password);
             if (email != null && password != null)
             {
-                //System.Diagnostics.Debug.WriteLine(account.Email + "|" + account.Password);
                 if (email.Equals(account.Email) && password.Equals(account.Password))
                 {//admin
                     var member = new Member
@@ -48,13 +42,6 @@ namespace eStore.Controllers
                     isMem = true;
                     return RedirectToAction("Index", "Home");
                 }
-                //else if (memberAccount != null)
-                //{ //member , phan quyen
-
-                //    isAdmin = false;
-                //    HttpContext.Session.SetInt32("id", loginUser.MemberId);
-                //    return RedirectToAction("Home", "User");
-                //}
                 foreach (var i in members)
                 {
                     if (i.Email.Equals(email) && i.Password.Equals(password))
@@ -65,7 +52,6 @@ namespace eStore.Controllers
                         return RedirectToAction("Index", "User");
 
                     }
-
                 }
                 if (isMem == true)
                 {

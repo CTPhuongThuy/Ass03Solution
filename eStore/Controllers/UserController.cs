@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace eStore.Controllers
 {
@@ -59,24 +60,36 @@ namespace eStore.Controllers
         }
 
         // GET: UserController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit()
         {
-            return View();
+            var member = await db.Members.FindAsync(LoginUser().MemberId);
+            if (member == null)
+            {
+                return NotFound();
+            }
+            return View(member);
         }
-
-        // POST: UserController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, [Bind("MemberId,Email,CompanyName,City,Country,Password,Status")] Member member)
         {
-            try
+            if (id != member.MemberId)
             {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                    db.Update(member);
+                    await db.SaveChangesAsync();
+                
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            return View(member);
+        }
+        private bool MemberExists(int id)
+        {
+            return db.Members.Any(e => e.MemberId == id);
         }
 
         // GET: UserController/Delete/5

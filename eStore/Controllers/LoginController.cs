@@ -25,7 +25,6 @@ namespace eStore.Controllers
         {
             IMemberRepository memberRepository = new MemberRepository();
             var account = ReadJson.GetAdmin();
-            bool isAdmin = false;
             bool isMem = false;
 
             var members = memberRepository.GetMembers();
@@ -38,7 +37,7 @@ namespace eStore.Controllers
                         Email = account.Email,
                         Password = account.Password,
                     };
-                    isAdmin = true;
+                    HttpContext.Session.SetString("isAdmin", "true");
                     isMem = true;
                     return RedirectToAction("Index", "Home");
                 }
@@ -46,8 +45,8 @@ namespace eStore.Controllers
                 {
                     if (i.Email.Equals(email) && i.Password.Equals(password))
                     {
-                        isAdmin = false;
                         isMem = true;
+                        HttpContext.Session.SetString("isAdmin", "false");
                         HttpContext.Session.SetInt32("id", i.MemberId);
                         return RedirectToAction("Index", "User");
 

@@ -13,7 +13,7 @@ namespace DataAccess
     public class ProductDAO
     {
         //-----------------------
-
+        AssignmentContext db = new AssignmentContext();
         private static ProductDAO instance = null;
         private static readonly object instanceLock = new object();
         private ProductDAO() { }
@@ -57,13 +57,13 @@ namespace DataAccess
         }
 
         //-----------------------
-        public Product getProductByID(int ProductId)
+        public Product GetProductByID(int ProductID)
         {
             Product product = null;
             try
             {
                 using var context = new AssignmentContext();
-                product = context.Products.SingleOrDefault(p => p.ProductId == ProductId);
+                product = context.Products.SingleOrDefault(p => p.ProductId == ProductID);
             }
             catch (Exception e)
             {
@@ -77,7 +77,7 @@ namespace DataAccess
         {
             try
             {
-                Product pro = getProductByID(product.ProductId);
+                Product pro = GetProductByID(product.ProductId);
                 if (pro == null)
                 {
                     using var context = new AssignmentContext();
@@ -96,12 +96,12 @@ namespace DataAccess
         }
 
         //-----------------------
-        public void updateProduct(Product product)
+        public void Update(Product product)
         {
             try
             {
-                Product pro = getProductByID(product.ProductId);
-                if (pro == null)
+                Product pro = GetProductByID(product.ProductId);
+                if (pro != null)
                 {
                     using var context = new AssignmentContext();
                     context.Products.Update(product);
@@ -124,7 +124,7 @@ namespace DataAccess
         {
             try
             {
-                Product pro = getProductByID(productId);
+                Product pro = GetProductByID(productId);
                 if (pro != null)
                 {
                     using (AssignmentContext db = new AssignmentContext())

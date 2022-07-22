@@ -1,0 +1,75 @@
+﻿@model IEnumerable<DataAccess.DataAccess.Product>
+
+@{
+    ViewData["Title"] = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<form asp-action="Search">
+    <div>
+        <input type="text" name="name" class="form-control" value="@ViewBag.Search" style="width: 10em; float:left;" />
+        <select name="price" style="height: 2.5em;">
+            <option value="@ViewBag.Price" hidden="hidden" selected="">@ViewBag.Price</option>
+            <option value="<50000"> 50000 </option>
+            <option value="50000-100000">50000-100000</option>
+            <option value=">100000"> >100000 </option>
+        </select>
+        <input type="submit" value="Find" class="btn btn-light" />
+    </div>
+    
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Weight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitslnStock)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@if(Model != null) foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Weight)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnitPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnitslnStock)
+            </td>
+            <td>
+               <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+               <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+               <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

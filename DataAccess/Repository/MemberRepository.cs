@@ -11,6 +11,8 @@ namespace DataAccess.Repository
     {
         public IEnumerable<Member> GetMembers() => MemberDAO.Instance.GetMemberList();
         public Member GetMemberByID(int MemberID) => MemberDAO.Instance.GetMemberByID(MemberID);
+        public Member GetMemberByAccount(string email, string password) => MemberDAO.Instance.GetMemberByAccount(email, password);
+
         public void InsertMember(Member member) => MemberDAO.Instance.AddNew(member);
         public void DeleteMember(int MemberID) => MemberDAO.Instance.Remove(MemberID);
         public void UpdateMember(Member member) => MemberDAO.Instance.Update(member);     

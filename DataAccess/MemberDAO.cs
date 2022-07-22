@@ -7,7 +7,8 @@ namespace DataAccess
 {
     public class MemberDAO
     {
-        
+
+        AssignmentContext db = new AssignmentContext();
         private static MemberDAO instance = null;
         private static readonly object instanceLock = new object();
         private MemberDAO() { }
@@ -25,6 +26,8 @@ namespace DataAccess
                 }
             }
         }
+        public Member GetMemberByAccount(string email, string password) => db.Members.Where(m => m.Email.Equals(email) && m.Password.Equals(password)).FirstOrDefault();
+
         public IEnumerable<Member> GetMemberList()
         {
             var members = new List<Member>();

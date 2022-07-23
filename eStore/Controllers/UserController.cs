@@ -14,6 +14,7 @@ namespace eStore.Controllers
     public class UserController : Controller
     {
 
+        IOrderRepository orderRepository = new OrderRepository();
         AssignmentContext db = new AssignmentContext();
         private Member LoginUser()
         {
@@ -111,6 +112,28 @@ namespace eStore.Controllers
             {
                 return View();
             }
+        }
+        //Get Order
+        public IActionResult OrderHistory()
+        {
+            var orders = db.Orders.Where(o => o.MemberId == LoginUser().MemberId).OrderByDescending(o => o.OrderDate);
+
+            return View(orders);
+        }
+        //Get OrderDetail
+        public async Task<IActionResult> OrderDetails(int id)
+        {
+            var orderList = orderRepository.GetOrders();
+            ViewData["OrderId"] = id;
+            //var order = orderList.OrderByDescending(orderList => orderList.OrderId);
+            var db1 = db.OrderDetails.Where(d => d.OrderDetailId == id);
+            //foreach (var d in db1)
+            //{
+            //    d.Product = await db.Products.FindAsync(d.ProductId);
+            //    d.Order = await db.Orders.FindAsync(d.OrderId);
+            //}
+           
+            return View(await db1.ToListAsync());
         }
     }
 }

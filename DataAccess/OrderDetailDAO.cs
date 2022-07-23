@@ -24,7 +24,20 @@ namespace DataAccess
                 }
             }
         }
-
+        public OrderDetail GetOrderDetailByOrderID(int OrderID)
+        {
+            OrderDetail order = null;
+            try
+            {
+                using var context = new AssignmentContext();
+                order = context.OrderDetails.SingleOrDefault(c => c.OrderId == OrderID);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            return order;
+        }
         public IEnumerable<OrderDetail> GetOrderDetailList()
         {
             var members = new List<OrderDetail>();

@@ -9,12 +9,14 @@ using System.Threading.Tasks;
 using DataAccess.Repository;
 using DataAccess.DataAccess;
 using Microsoft.AspNetCore.Http;
+using eStore.ViewModels;
 
 namespace eStore.Controllers
 {
     public class OrderController : Controller
     {
         IOrderRepository orderRepository = new OrderRepository();
+        IOrderDetailRepository orderDetailRepository = new OrderDetailRepository();
         // GET: OrderController
         public ActionResult Index()
         {
@@ -45,11 +47,17 @@ namespace eStore.Controllers
                 return NotFound();
             }
             var order = orderRepository.GetOrderByID(id);
-            if (order == null)
+            var orderDetail = orderDetailRepository.GetOrderDetailByOrderID(id);
+            if (order == null || orderDetail == null)
             {
                 return NotFound();
             }
-            return View(order);
+            var DetailOrderAndOrderDetail = new OrderDetailViewModel
+            {
+                Order = order,
+                OrderDetail = orderDetail,
+            };
+            return View(DetailOrderAndOrderDetail);
         }
 
         // GET: OrderController/Create

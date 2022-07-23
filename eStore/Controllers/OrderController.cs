@@ -74,6 +74,7 @@ namespace eStore.Controllers
             if (ModelState.IsValid)
             {
                 orderRepository.InsertOrder(order);
+                orderDetail.OrderId = order.OrderId;
                 orderDetailRepository.InsertOrderDetail(orderDetail);
                 return RedirectToAction(nameof(Index));
             }

@@ -8,12 +8,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.Repository;
 using Microsoft.EntityFrameworkCore;
+using eStore.ViewModels;
 
 namespace eStore.Controllers
 {
     public class UserController : Controller
     {
 
+        IOrderDetailRepository orderDetailRepository = new OrderDetailRepository();
         IOrderRepository orderRepository = new OrderRepository();
         AssignmentContext db = new AssignmentContext();
         private Member LoginUser()
@@ -123,17 +125,66 @@ namespace eStore.Controllers
         //Get OrderDetail
         public async Task<IActionResult> OrderDetails(int id)
         {
-            var orderList = orderRepository.GetOrders();
-            ViewData["OrderId"] = id;
-            //var order = orderList.OrderByDescending(orderList => orderList.OrderId);
-            var db1 = db.OrderDetails.Where(d => d.OrderDetailId == id);
-            //foreach (var d in db1)
-            //{
-            //    d.Product = await db.Products.FindAsync(d.ProductId);
-            //    d.Order = await db.Orders.FindAsync(d.OrderId);
-            //}
-           
-            return View(await db1.ToListAsync());
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var order = orderRepository.GetOrderByID(id);
+            var orderDetail = orderDetailRepository.GetOrderDetailByOrderID(id);
+            if (order == null || orderDetail == null)
+            {
+                return NotFound();
+            }
+            var DetailOrderAndOrderDetail = new OrderDetailViewModel
+            {
+                Order = order,
+                OrderDetail = orderDetail,
+            };
+            return View(DetailOrderAndOrderDetail);
+        }
+        public ActionResult EditOrderDetail(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var order = orderRepository.GetOrderByID(id);
+            var orderDetail = orderDetailRepository.GetOrderDetailByOrderID(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            OrderDetailViewModel orderDetailView = new OrderDetailViewModel
+            {
+                Order = order,
+                OrderDetail = orderDetail,
+            };
+            return View(orderDetailView);
+        }
+
+        // POST: OrderController/Edit/:{id}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditOrderDetail(int id, Order order, OrderDetail orderDetail)
+        {
+            if (id != order.OrderId)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                orderRepository.UpdateOrder(order);
+                orderDetailRepository.UpdateOrderDetail(orderDetail);
+                return RedirectToAction(nameof(OrderHistory));
+            }
+
+            var EditModel = new OrderDetailViewModel
+            {
+                Order = order,
+                OrderDetail = orderDetail,
+            };
+            return View(EditModel);
         }
     }
 }

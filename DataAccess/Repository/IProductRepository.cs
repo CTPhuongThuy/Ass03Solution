@@ -11,7 +11,7 @@ namespace DataAccess.Repository
     {
         IEnumerable<Product> GetProducts();
         IEnumerable<Product> GetFilteredProducts(String tag);
-        Product GetProductById(int productId);
+        Product GetProductByID(int ProductID);
         void InsertProduct(Product product);
         void UpdateProduct(Product product);
         void RemoveProduct(int productId);

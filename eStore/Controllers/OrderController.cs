@@ -69,14 +69,20 @@ namespace eStore.Controllers
         // POST: OrderController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Order order)
+        public ActionResult Create(Order order, OrderDetail orderDetail)
         {
             if (ModelState.IsValid)
             {
                 orderRepository.InsertOrder(order);
+                orderDetailRepository.InsertOrderDetail(orderDetail);
                 return RedirectToAction(nameof(Index));
             }
-            return View(order);
+            var CreateModel = new OrderDetailViewModel
+            {
+                Order = order,
+                OrderDetail = orderDetail,
+            };
+            return View(CreateModel);
         }
 
         // GET: OrderController/Edit
@@ -87,17 +93,23 @@ namespace eStore.Controllers
                 return NotFound();
             }
             var order = orderRepository.GetOrderByID(id);
+            var orderDetail = orderDetailRepository.GetOrderDetailByOrderID(id);
             if (order == null)
             {
                 return NotFound();
             }
-            return View(order);
+            OrderDetailViewModel orderDetailView = new OrderDetailViewModel
+            {
+                Order = order,
+                OrderDetail = orderDetail,
+            };
+            return View(orderDetailView);
         }
 
         // POST: OrderController/Edit/:{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Order order)
+        public ActionResult Edit(int id, Order order, OrderDetail orderDetail)
         {
             if (id != order.OrderId)
             {
@@ -106,9 +118,16 @@ namespace eStore.Controllers
             if (ModelState.IsValid)
             {
                 orderRepository.UpdateOrder(order);
+                orderDetailRepository.UpdateOrderDetail(orderDetail);
                 return RedirectToAction(nameof(Index));
             }
-            return View(order);
+
+            var EditModel = new OrderDetailViewModel
+            {
+                Order = order,
+                OrderDetail = orderDetail,
+            };
+            return View(EditModel);
         }
 
         // GET: OrderController/Delete
